@@ -1,44 +1,47 @@
 # Análisis de Efectividad Global de Equipos (OEE) en la Industria del Empaque
 
-Este proyecto es un caso de estudio práctico desarrollado para el **Certificado de Análisis de Datos de Google**. Siguiendo las directrices del currículo para documentar el caso, a continuación se presentan los entregables requeridos sobre el análisis elaborado.
+Este proyecto es un caso de estudio práctico desarrollado para el **Certificado de Análisis de Datos de Google**. Siguiendo las directrices del Case Study 3 ("Follow your own case study path"), el análisis sigue las 6 fases del proceso de análisis de datos: **Ask, Prepare, Process, Analyze, Share y Act**.
 
-## 1. Tarea Empresarial (Business Task)
-El objetivo principal de este análisis es procesar un conjunto de datos reales de telemetría industrial de máquinas empacadoras para identificar las causas principales de tiempo de inactividad (downtime) y calcular la **Disponibilidad** general de los equipos. La meta final es proporcionar información respaldada por datos que permita a los gerentes de operaciones reducir ineficiencias, priorizar mantenimientos y asentar las bases para la medición del indicador mundial operativo OEE (Overall Equipment Effectiveness).
+## 1. Tarea Empresarial (Business Task) — *Ask*
+El objetivo principal es analizar datos de telemetría de 5 máquinas empacadoras para calcular el **OEE (Overall Equipment Effectiveness)** de cada equipo, identificar las causas principales de tiempo perdido, y generar recomendaciones accionables para que la gerencia de operaciones pueda reducir ineficiencias y priorizar mantenimientos.
 
-## 2. Fuentes de Datos
-Se utilizó el "Packaging Industry Anomaly Detection Dataset" obtenido de fuente pública en [Kaggle](https://www.kaggle.com/datasets/orvile/packaging-industry-anomaly-detection-dataset).
-Este conjunto contiene registros exhaustivos y minute-by-minute sobre el estado operativo, pausas y fallas de 5 máquinas empacadoras a lo largo de un periodo de trabajo productivo. El análisis se concentró fundamentalmente en el archivo principal `raw_data.csv`.
+## 2. Fuentes de Datos — *Prepare*
+Se utilizó el **"Packaging Industry Anomaly Detection Dataset"** obtenido de [Kaggle](https://www.kaggle.com/datasets/orvile/packaging-industry-anomaly-detection-dataset). El dataset contiene dos archivos:
 
-## 3. Limpieza y Manipulación de Datos
-La limpieza y el procesamiento de los datos se llevaron a cabo paso a paso usando el entorno **Jupyter Notebook** (`notebooks/01_exploracion_y_limpieza.ipynb`) y haciendo uso de bibliotecas de Python como `pandas`, `matplotlib` y `seaborn`.
+| Archivo | Descripción |
+|---------|-------------|
+| `raw_data.csv` | Registro evento por evento del estado de cada máquina: timestamps, tipo de estado (producción, idle, downtime, etc.), duración, contadores de piezas (`pi`, `po`) y velocidad |
+| `sequences_1h_data.csv` | Datos agregados por hora con porcentajes de tiempo en cada estado (`%production`, `%idle`, `%downtime`, etc.) y conteo de alarmas por tipo |
 
-Los principales pasos llevados a cabo fueron:
-* Verificación de valores nulos e información de las estructuras de datos (EDA Inicial).
-* Transformación de valores temporales, como la columna `interval_start`, cambiada al tipo `datetime` de pandas para permitir un análisis agrupado por fechas para las series de tiempo.
-* Filtrado del DataFrame original separando periodos regulares de operación (`production`) frente a inactividad o fallos.
-* Creación de un diccionario para renombrar los IDs de los equipos (p. ej., transformar 's_1' en 'Máquina 1') y facilitar la lectura en los gráficos.
+## 3. Limpieza y Manipulación de Datos — *Process*
+La limpieza se realiza en el notebook `notebooks/01_exploracion_y_limpieza.ipynb` usando Python con `pandas`, `matplotlib` y `seaborn`. Los pasos documentados incluyen:
+* Verificación de valores nulos, duplicados e información de las estructuras de datos (EDA Inicial).
+* Conversión de `interval_start` a formato `datetime` para análisis temporal.
+* Estandarización de nombres: traducción de estados y renombrado de equipos (ej. `s_1` → `Máquina 1`).
+* Validación de valores numéricos (no negativos en `elapsed`, `pi`, `po`, `speed`).
+* Exploración del archivo `sequences_1h_data.csv` con sus columnas clave.
 
-## 4. Resumen del Análisis
-El análisis de los datos se enfocó en comprender profundamente cómo se pierde el tiempo a nivel general en la planta, identificando los obstáculos más importantes que detienen la producción. Para ello:
-1. Calculamos la **Disponibilidad General de la Planta**, que representa el tiempo trabajando frente al tiempo total disponible.
-2. Agrupamos los lapsos de inactividad por el tipo específico de detención a fin de aplicar el "Principio de Pareto" y visualizar si una pequeña cantidad de problemas causan la mayoría de los tiempos perdidos.
-3. Comparamos el trabajo y producción bruta de cada una de las 5 máquinas.
-4. Sumamos las horas de producción efectivas día con día para crear una visualización temporal sobre el ritmo productivo.
-5. Formulamos el cálculo del **OEE (Efectividad Global del Equipo)** integrando Rendimiento (desempeño de velocidad de la máquina) y Calidad (porcentaje de piezas buenas `po` sobre el total `pi`).
+## 4. Resumen del Análisis — *Analyze*
+El análisis se desarrolla en `notebooks/02_calculo_y_graficos_oee.ipynb`:
+1. **Análisis de Pareto** de tiempo no productivo para identificar las causas principales.
+2. **Cálculo de OEE por máquina** desglosando Disponibilidad, Rendimiento y Calidad.
+3. **Análisis temporal** de las horas de producción diarias.
+4. **Comparación de producción neta** entre las 5 máquinas.
 
-## 5. Visualizaciones y Hallazgos Clave
-Las librerías visuales demostraron tres hechos principales:
-* La principal causa de interrupción de las máquinas es el estado de **"Inactividad no justificada (Idle)"**, responsable de un abrumador **41.49%** de las paradas. Le sigue el **"Mantenimiento Planeado"** (26.41%) y la **"Pérdida de Rendimiento"** (19.37%). ([Ver Gráfico de Pareto](visualizaciones/pareto_downtime.png)).
-* Al observar el desempeño individual, la máquina con el mayor volumen de producción acumulado constante ha sido la **Máquina 2**. ([Ver Gráfico Producción](visualizaciones/produccion_equipos.png)).
-* Los volúmenes diarios en horas máquina fluctúan considerablemente, validado así gracias a nuestro modelado temporal de productividad. ([Ver Serie de Tiempo Temporal](visualizaciones/produccion_temporal.png)).
+## 5. Visualizaciones y Hallazgos Clave — *Share*
+* La principal causa de pérdida de tiempo es la **"Inactividad (Idle)"**, responsable de ~41% de las paradas. Le siguen el **Mantenimiento Planeado** (~26%) y la **Pérdida de Rendimiento** (~19%). ([Ver Pareto](visualizaciones/pareto_downtime.png))
+* La **Calidad** es consistentemente alta (>90%) en todas las máquinas, pero la **Disponibilidad** es el cuello de botella del OEE. ([Ver OEE](visualizaciones/oee_componentes.png))
+* La producción diaria presenta alta variabilidad, sugiriendo irregularidades operativas. ([Ver Serie Temporal](visualizaciones/produccion_temporal.png))
+* La máquina con mayor volumen de producción acumulado es la **Máquina 2**. ([Ver Producción](visualizaciones/produccion_equipos.png))
 
-* Finalmente, se logró calcular el **OEE Completo** por máquina, desglosando y graficando sus 3 pilares, lo que brinda una perspectiva de las mermas productivas holística. ([Ver Gráfico OEE](visualizaciones/oee_componentes.png)).
+## 6. Conclusiones y Recomendaciones — *Act*
+| # | Recomendación | Impacto |
+|---|--------------|---------|
+| 1 | **Investigar y subcategorizar el tiempo "Idle"** (espera material, cambio turno, sin clasificar) | Alto — 41% de pérdidas |
+| 2 | **Optimizar calendario de mantenimiento** preventivo a horarios de menor demanda | Medio — 26% de paradas |
+| 3 | **Monitorear patrones temporales** para detectar días de baja producción recurrente | Medio |
 
-## 6. Siguientes Pasos y Entregables Adicionales
-Para complementar estos hallazgos, en fases posteriores valdría la pena expandir la indagación actual hacia áreas de analítica descriptiva avanzada o ingeniería predictiva:
-* **Modelos Predictivos (Machine Learning)**: Con la data comprimida ofrecida en este repositorio (archivo `sequences_1h_data.csv`), se podría diseñar un algoritmo predictivo para alertar con antelación cuáles máquinas y a qué hora precisa podrían sufrir el próximo fallo inminente.
-* **Dashboard interactivo en Tableau o Looker Studio**: Brindar este mismo resultado visual pero actualizado automáticamente a los directivos de producción en sus reportes diarios.
-
-## 7. Conclusiones y Recomendaciones Relevantes (Top Insights)
-* **Oportunidad de Mejora por "Inactividad (Idle)"**: Puesto que un 41.5% del tiempo perdido simplemente se cataloga como tiempo inactivo "idle", la planta tiene un inmenso techo de crecimiento. Se recomienda revisar urgentemente tiempos ociosos ligados a fallas logísticas o falta temprana de material de empaque, arranques fríos, cambios de personal de turno y fallas que no se catalogan apropiadamente. 
-* **Evaluación de Mantenimientos**: Teniendo al "Mantenimiento Planeado" (26.4%) en la segunda posición como destructor de margen de tiempo disponible, se debe reestructurar y optimizar el calendario actual para realizar mantenimientos rutinarios sin obstaculizar masivamente las franjas más productivas.
+### Próximos pasos
+* **Dashboard interactivo** en Looker Studio o Tableau para monitoreo continuo.
+* **Análisis predictivo** con `sequences_1h_data.csv` para anticipar fallos.
+* **Estandarizar registro de paradas** mejorando la categorización de eventos "idle".
