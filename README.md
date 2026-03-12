@@ -45,3 +45,7 @@ El análisis se desarrolla en `notebooks/02_calculo_y_graficos_oee.ipynb`:
 * **Dashboard interactivo** en Looker Studio o Tableau para monitoreo continuo.
 * **Análisis predictivo** con `sequences_1h_data.csv` para anticipar fallos.
 * **Estandarizar registro de paradas** mejorando la categorización de eventos "idle".
+
+### Contacto
+* ✉️ diegonmnn@gmail.com
+* 💼 [LinkedIn](https://linkedin.com/in/diego-neumann)
