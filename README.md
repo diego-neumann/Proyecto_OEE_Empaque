@@ -29,10 +29,10 @@ El análisis se desarrolla en `notebooks/02_calculo_y_graficos_oee.ipynb`:
 4. **Comparación de producción neta** entre las 5 máquinas.
 
 ## 5. Visualizaciones y Hallazgos Clave — *Share*
-* La principal causa de pérdida de tiempo es la **"Inactividad (Idle)"**, responsable de ~41% de las paradas. Le siguen el **Mantenimiento Planeado** (~26%) y la **Pérdida de Rendimiento** (~19%). (![Pareto de Downtime](visualizaciones/pareto_downtime.png))
-* La **Calidad** es consistentemente alta (>90%) en todas las máquinas, pero la **Disponibilidad** es el cuello de botella del OEE. (![OEE](visualizaciones/oee_componentes.png))
-* La producción diaria presenta alta variabilidad, sugiriendo irregularidades operativas. (![Serie Temporal](visualizaciones/produccion_temporal.png))
-* La máquina con mayor volumen de producción acumulado es la **Máquina 2**. (![Producción](visualizaciones/produccion_equipos.png))
+* La principal causa de pérdida de tiempo es la **"Inactividad (Idle)"**, responsable de ~41% de las paradas. Le siguen el **Mantenimiento Planeado** (~26%) y la **Pérdida de Rendimiento** (~19%): ![Pareto de Downtime](visualizaciones/pareto_downtime.png)
+* La **Calidad** es consistentemente alta (>90%) en todas las máquinas, pero la **Disponibilidad** es el cuello de botella del OEE: ![OEE](visualizaciones/oee_componentes.png)
+* La producción diaria presenta alta variabilidad, sugiriendo irregularidades operativas: ![Serie Temporal](visualizaciones/produccion_temporal.png)
+* La máquina con mayor volumen de producción acumulado es la **Máquina 2**: ![Producción](visualizaciones/produccion_equipos.png)
 
 ## 6. Conclusiones y Recomendaciones — *Act*
 | # | Recomendación | Impacto |
